@@ -82,29 +82,9 @@ match(const str *text, const str *pattern, int match_prefix, int match_substring
     memcmp(text->s, pattern->s, pattern->length) == 0;
 }
 
-/** 
- * Prints the names of all known resources to @p buf. This function
- * sets @p buflen to the number of bytes actually written and returns
- * @c 1 on succes. On error, the value in @p buflen is undefined and
- * the return value will be @c 0.
- * 
- * @param context The context with the resource map.
- * @param buf     The buffer to write the result.
- * @param buflen  Must be initialized to the maximum length of @p buf and will be
- *                set to the number of bytes written on return.
- * @param query_filter A filter query according to <a href="http://tools.ietf.org/html/draft-ietf-core-link-format-11#section-4.1">Link Format</a>
- * 
- * @return @c 0 on error or @c 1 on success.
- */
-#if defined(__GNUC__) && defined(WITHOUT_QUERY_FILTER)
 int
-print_wellknown(coap_context_t *context, unsigned char *buf, size_t *buflen,
-		coap_opt_t *query_filter __attribute__ ((unused))) {
-#else /* not a GCC */
-int
-print_wellknown(coap_context_t *context, unsigned char *buf, size_t *buflen,
+coap_print_wellknown(coap_context_t *context, unsigned char *buf, size_t *buflen,
 		coap_opt_t *query_filter) {
-#endif /* GCC */
   coap_resource_t *r;
   unsigned char *p = buf;
   size_t left, written = 0;
@@ -121,6 +101,7 @@ print_wellknown(coap_context_t *context, unsigned char *buf, size_t *buflen,
     {3, (unsigned char *)"rel"},
     {0, NULL}};
 #endif /* WITHOUT_QUERY_FILTER */
+
 
 #ifdef WITH_CONTIKI
   int i;
@@ -168,6 +149,8 @@ print_wellknown(coap_context_t *context, unsigned char *buf, size_t *buflen,
       }      
     }
   }
+#else /* WITHOUT_QUERY_FILTER */
+  (void)query_filter;
 #endif /* WITHOUT_QUERY_FILTER */
 
 #ifndef WITH_CONTIKI

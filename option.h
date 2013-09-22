@@ -70,7 +70,7 @@ size_t coap_opt_size(const coap_opt_t *opt);
  * @param pdu The PDU containing the options.
  * @return A pointer to the first option if available, or @c NULL otherwise.
  */
-coap_opt_t *options_start(coap_pdu_t *pdu);
+coap_opt_t * coap_options_start(coap_pdu_t *pdu);
 
 /**
  * Interprets @p opt as pointer to a CoAP option and advances to

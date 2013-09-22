@@ -168,6 +168,28 @@ int coap_split_path(const unsigned char *s, size_t length,
 int coap_split_query(const unsigned char *s, size_t length, 
 		     unsigned char *buf, size_t *buflen);
 
+
+/** 
+ * Decodes percent-encoded characters while copying the string @p seg
+ * of size @p length to @p buf. The caller of this function must
+ * ensure that the percent-encodings are correct (i.e. the character
+ * '%' is always followed by two hex digits. and that @p buf provides
+ * sufficient space to hold the result. This function is supposed to
+ * be called by make_decoded_option() only.
+ * 
+ * @param seg     The segment to decode and copy.
+ * @param length  Length of @p seg.
+ * @param buf     The result buffer.
+ */
+void coap_decode_segment(const unsigned char *seg, size_t length, unsigned char *buf);
+
+/**
+ * Runs through the given path (or query) segment and checks if
+ * percent-encodings are correct. This function returns @c -1 on error
+ * or the length of @p s when decoded.
+ */
+int coap_check_segment(const unsigned char *s, size_t length);
+
 /** @} */
 
 #endif /* _COAP_URI_H_ */

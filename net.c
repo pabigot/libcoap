@@ -82,8 +82,6 @@ coap_free_node(coap_queue_t *node) {
 }
 #endif /* WITH_CONTIKI */
 
-int print_wellknown(coap_context_t *, unsigned char *, size_t *, coap_opt_t *);
-
 void coap_handle_failed_notify(coap_context_t *, const coap_address_t *, 
 			       const str *);
 
@@ -937,7 +935,7 @@ wellknown_response(coap_context_t *context, coap_pdu_t *request) {
 		  coap_encode_var_bytes(buf, 
 			COAP_MEDIATYPE_APPLICATION_LINK_FORMAT), buf);
 
-  /* Manually set payload of response to let print_wellknown() write,
+  /* Manually set payload of response to let coap_print_wellknown() write,
    * into our buffer without copying data. */
 
   resp->data = (unsigned char *)resp->hdr + resp->length;
@@ -946,9 +944,9 @@ wellknown_response(coap_context_t *context, coap_pdu_t *request) {
   resp->length++;
   len = resp->max_size - resp->length;
 
-  if (!print_wellknown(context, resp->data, &len,
+  if (!coap_print_wellknown(context, resp->data, &len,
 	       coap_check_option(request, COAP_OPTION_URI_QUERY, &opt_iter))) {
-    debug("print_wellknown failed\n");
+    debug("coap_print_wellknown failed\n");
     goto error;
   } 
   

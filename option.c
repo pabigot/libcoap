@@ -21,7 +21,7 @@
 #include "debug.h"
 
 coap_opt_t *
-options_start(coap_pdu_t *pdu) {
+coap_options_start(coap_pdu_t *pdu) {
 
   if (pdu && pdu->hdr && 
       (pdu->hdr->token + pdu->hdr->token_length 

@@ -187,20 +187,8 @@ coap_split_uri(unsigned char *str_var, size_t len, coap_uri_t *uri) {
  */
 #define hexchar_to_dec(c) ((c) & 0x40 ? ((c) & 0x0F) + 9 : ((c) & 0x0F))
 
-/** 
- * Decodes percent-encoded characters while copying the string @p seg
- * of size @p length to @p buf. The caller of this function must
- * ensure that the percent-encodings are correct (i.e. the character
- * '%' is always followed by two hex digits. and that @p buf provides
- * sufficient space to hold the result. This function is supposed to
- * be called by make_decoded_option() only.
- * 
- * @param seg     The segment to decode and copy.
- * @param length  Length of @p seg.
- * @param buf     The result buffer.
- */
 void
-decode_segment(const unsigned char *seg, size_t length, unsigned char *buf) {
+coap_decode_segment(const unsigned char *seg, size_t length, unsigned char *buf) {
 
   while (length--) {
 
@@ -216,13 +204,8 @@ decode_segment(const unsigned char *seg, size_t length, unsigned char *buf) {
   }
 }
 
-/**
- * Runs through the given path (or query) segment and checks if
- * percent-encodings are correct. This function returns @c -1 on error
- * or the length of @p s when decoded.
- */
 int 
-check_segment(const unsigned char *s, size_t length) {
+coap_check_segment(const unsigned char *s, size_t length) {
 
   size_t n = 0;
 
@@ -271,7 +254,7 @@ make_decoded_option(const unsigned char *s, size_t length,
     return -1;
   }
 
-  res = check_segment(s, length);
+  res = coap_check_segment(s, length);
   if (res < 0)
     return -1;
 
@@ -291,7 +274,7 @@ make_decoded_option(const unsigned char *s, size_t length,
     return -1;
   }
 
-  decode_segment(s, length, buf);
+  coap_decode_segment(s, length, buf);
 
   return written + res;
 }

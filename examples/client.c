@@ -795,13 +795,10 @@ cmdline_option(char *arg) {
 					 (unsigned char *)arg), order_opts);
 }
 
-extern int  check_segment(const unsigned char *s, size_t length);
-extern void decode_segment(const unsigned char *seg, size_t length, unsigned char *buf);
-
 int
 cmdline_input(char *text, str *buf) {
   int len;
-  len = check_segment((unsigned char *)text, strlen(text));
+  len = coap_check_segment((unsigned char *)text, strlen(text));
 
   if (len < 0)
     return 0;
@@ -811,7 +808,7 @@ cmdline_input(char *text, str *buf) {
     return 0;
 
   buf->length = len;
-  decode_segment((unsigned char *)text, strlen(text), buf->s);
+  coap_decode_segment((unsigned char *)text, strlen(text), buf->s);
   return 1;
 }
 
