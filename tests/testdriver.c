@@ -16,6 +16,9 @@ main(int argc, char **argv) {
   CU_ErrorCode result;
   CU_BasicRunMode run_mode = CU_BRM_VERBOSE;
 
+  (void)argc;
+  (void)argv;
+
   if (CU_initialize_registry() != CUE_SUCCESS) {
     fprintf(stderr, "E: test framework initialization failed\n");
     return -2;
