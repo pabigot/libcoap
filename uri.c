@@ -35,8 +35,10 @@
  */
 static inline unsigned char *
 strnchr(unsigned char *s, size_t len, unsigned char c) {
-  while (len && *s++ != c)
+  while (len && *s != c) {
+    ++s;
     --len;
+  }
   
   return len ? s : NULL;
 }
