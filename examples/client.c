@@ -108,6 +108,8 @@ coap_pdu_t *
 new_ack( coap_context_t  *ctx, coap_queue_t *node ) {
   coap_pdu_t *pdu = coap_new_pdu();
 
+  (void)ctx;
+    
   if (pdu) {
     pdu->hdr->type = COAP_MESSAGE_ACK;
     pdu->hdr->code = 0;
@@ -286,6 +288,8 @@ message_handler(struct coap_context_t  *ctx,
   size_t len;
   unsigned char *databuf;
   coap_tid_t tid;
+
+  (void)id;
 
 #ifndef NDEBUG
   if (LOG_DEBUG <= coap_get_log_level()) {
@@ -726,6 +730,7 @@ set_blocksize() {
 
 void
 cmdline_subscribe(char *arg) {
+  (void)arg;
   obs_seconds = atoi(optarg);
   coap_insert(&optlist, new_option_node(COAP_OPTION_SUBSCRIPTION, 0, NULL),
 	      order_opts);

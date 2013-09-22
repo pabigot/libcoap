@@ -70,6 +70,7 @@ static coap_async_state_t *async = NULL;
 /* SIGINT handler: set quit to 1 for graceful termination */
 void
 handle_sigint(int signum) {
+  (void)signum;
   quit = 1;
 }
 
@@ -131,6 +132,12 @@ hnd_get_index(coap_context_t  *ctx, struct coap_resource_t *resource,
 	      coap_pdu_t *response) {
   unsigned char buf[3];
 
+  (void)ctx;
+  (void)resource;
+  (void)peer;
+  (void)request;
+  (void)token;
+
   response->hdr->code = COAP_RESPONSE_CODE(205);
 
   coap_add_option(response, COAP_OPTION_CONTENT_TYPE,
@@ -151,6 +158,10 @@ hnd_get_resource(coap_context_t  *ctx, struct coap_resource_t *resource,
   unsigned char buf[2];
   coap_payload_t *test_payload;
   coap_block_t block;
+
+  (void)ctx;
+  (void)peer;
+  (void)token;
 
   test_payload = coap_find_payload(resource->key);
   if (!test_payload) {
@@ -225,6 +236,10 @@ hnd_delete_resource(coap_context_t  *ctx, struct coap_resource_t *resource,
 		coap_pdu_t *response) {
   coap_payload_t *payload;
 
+  (void)peer;
+  (void)request;
+  (void)token;
+
   payload = coap_find_payload(resource->key);
 
   if (payload)
@@ -252,6 +267,10 @@ hnd_post_test(coap_context_t  *ctx, struct coap_resource_t *resource,
   unsigned char _buf[BUFSIZE];
   unsigned char *buf = _buf;
   size_t buflen = BUFSIZE;
+
+  (void)resource;
+  (void)peer;
+  (void)token;
 
   coap_get_data(request, &len, &data);
 
@@ -311,6 +330,10 @@ hnd_put_test(coap_context_t  *ctx, struct coap_resource_t *resource,
   size_t len;
   unsigned char *data;
 
+  (void)ctx;
+  (void)peer;
+  (void)token;
+
   response->hdr->code = COAP_RESPONSE_CODE(204);
 
   coap_get_data(request, &len, &data);
@@ -365,6 +388,12 @@ hnd_delete_test(coap_context_t  *ctx, struct coap_resource_t *resource,
     payload->length = 0;
 #endif
 
+  (void)ctx;
+  (void)resource;
+  (void)peer;
+  (void)request;
+  (void)token;
+  
   response->hdr->code = COAP_RESPONSE_CODE(202);
 }
 
@@ -377,6 +406,11 @@ hnd_get_query(coap_context_t  *ctx, struct coap_resource_t *resource,
   coap_opt_t *q;
   size_t len, L;
   unsigned char buf[70];
+
+  (void)ctx;
+  (void)resource;
+  (void)peer;
+  (void)token;
 
   response->hdr->code = COAP_RESPONSE_CODE(205);
 
@@ -414,6 +448,9 @@ hnd_get_separate(coap_context_t  *ctx, struct coap_resource_t *resource,
   coap_opt_t *option;
   coap_opt_filter_t f;
   unsigned long delay = 5;
+
+  (void)resource;
+  (void)token;
 
   if (async) {
     if (async->id != request->hdr->id) {
