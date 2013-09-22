@@ -14,6 +14,7 @@ RANLIB=@RANLIB@
 SHELL = /bin/sh
 MKDIR = mkdir
 ETAGS = @ETAGS@
+CC = @CC@
 
 abs_builddir = @abs_builddir@
 top_builddir = @top_builddir@
