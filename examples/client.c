@@ -598,8 +598,9 @@ cmdline_content_type(char *arg, unsigned short key) {
 	*p = '\0';
       value[valcnt++] = atoi(q);
     } else {
+      size_t qlen = (NULL != p) ? (size_t)(p - q) : strlen(q);
       for (i=0; content_types[i].media_type &&
-	     strncmp(q,content_types[i].media_type, p ? p-q : strlen(q)) != 0 ;
+	     strncmp(q,content_types[i].media_type, qlen) != 0 ;
 	   ++i)
 	;
       
@@ -850,7 +851,7 @@ cmdline_input_from_file(char *filename, str *buf) {
 
   len = fread(buf->s, 1, buf->length, inputfile);
 
-  if (len < buf->length) {
+  if (len < (ssize_t)buf->length) {
     if (ferror(inputfile) != 0) {
       perror("cmdline_input_from_file: fread");
       coap_free(buf->s);
