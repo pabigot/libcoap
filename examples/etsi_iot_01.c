@@ -286,7 +286,7 @@ hnd_post_test(coap_context_t  *ctx, struct coap_resource_t *resource,
     coap_resource_t *r;
 
     memset(uri, 0, sizeof(coap_dynamic_uri_t));
-    uri->length = min(l, (size_t)snprintf((char *)uri->data, l, "test/%p", test_payload));
+    uri->length = min(l, (size_t)snprintf((char *)uri->data, l, "test/%p", (void*)test_payload));
     test_payload->length = len;
 
     memcpy(test_payload->data, data, len);
