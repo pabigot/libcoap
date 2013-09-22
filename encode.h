@@ -9,9 +9,10 @@
 #ifndef _COAP_ENCODE_H_
 #define _COAP_ENCODE_H_
 
-#if (BSD >= 199103) || defined(WITH_CONTIKI)
+#include "config.h"
+#if (BSD >= 199103) || defined(WITH_CONTIKI) || defined(HAVE_STRING_H)
 # include <string.h>
-#else
+#elif defined(HAVE_STRINGS_H)
 # include <strings.h>
 #endif
 
