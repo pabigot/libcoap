@@ -327,10 +327,6 @@ write_option(unsigned char *s, size_t len, void *data) {
   int res;
   assert(state);
 
-  /* skip empty segments and those that consist of only one or two dots */
-  if (memcmp(s, "..", min(len,2)) == 0)
-    return;
-  
   res = make_decoded_option(s, len, state->buf.s, state->buf.length);
   if (res > 0) {
     state->buf.s += res;
@@ -364,7 +360,7 @@ coap_split_query(const unsigned char *s, size_t length,
 
   coap_split_path_impl(&pi, write_option, &tmp);
 
-  *buflen = tmp.buf.length;
+  *buflen = *buflen - tmp.buf.length;
   return tmp.n;
 }
 
@@ -466,6 +462,7 @@ coap_parse_iterator_init(unsigned char *s, size_t n,
   assert(separator);
 
   pi->separator = separator;
+  pi->last_sep_size = 0;
   pi->delim = delim;
   pi->dlen = dlen;
   pi->pos = s;
@@ -483,20 +480,14 @@ coap_parse_next(coap_parse_iterator_t *pi) {
     return NULL;
 
   /* proceed to the next segment */
-  pi->n -= pi->segment_length;
-  pi->pos += pi->segment_length;
+  pi->n -= pi->segment_length + pi->last_sep_size;
+  pi->pos += pi->segment_length + pi->last_sep_size;
   pi->segment_length = 0;
 
-  /* last segment? */
-  if (!pi->n || strnchr(pi->delim, pi->dlen, *pi->pos)) {
+  /* last segment was empty and has been returned */
+  if (!pi->n && (0 == pi->last_sep_size)) {
     pi->pos = NULL;
     return NULL;
-  }
-
-  /* skip following separator (the first segment might not have one) */
-  if (*pi->pos == pi->separator) {
-    ++pi->pos;
-    --pi->n;
   }
 
   p = pi->pos;
@@ -506,11 +497,7 @@ coap_parse_next(coap_parse_iterator_t *pi) {
     ++p;
     ++pi->segment_length;
   }
-
-  if (!pi->n) {
-    pi->pos = NULL;
-    pi->segment_length = 0;
-  }
+  pi->last_sep_size = (pi->segment_length < pi->n && *p == pi->separator);
 
   return pi->pos;
 }

@@ -78,6 +78,7 @@ int coap_hash_path(const unsigned char *path, size_t len, coap_key_t key);
 typedef struct {
   size_t n;			/**< number of remaining characters in buffer */
   unsigned char separator;	/**< segment separators */
+  unsigned char last_sep_size;	/**< length of separator at end of last segment */
   unsigned char *delim; 	/**< delimiters where to split the string */
   size_t dlen;			/**< length of separator */
   unsigned char *pos;		/**< current position in buffer */
