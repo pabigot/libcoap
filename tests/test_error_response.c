@@ -287,6 +287,11 @@ t_error_response8(void) {
   };
   coap_pdu_t *response;
 
+  if (COAP_MAX_OPT < 2000) {
+    CU_PASS("WARNING: bypassed due to COAP_MAX_OPT < 2000");
+    return;
+  }
+  
   coap_pdu_clear(pdu, pdu->max_size);
   pdu->hdr->type = COAP_MESSAGE_CON;
   coap_add_token(pdu, 5, (unsigned char *)"token");
