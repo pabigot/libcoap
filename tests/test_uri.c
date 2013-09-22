@@ -91,25 +91,32 @@ t_parse_uri4(void) {
 
 void
 t_parse_uri5(void) {
+  char teststr[] = "coap://foo:10000";
+  int result;
+  coap_uri_t uri;
+
+  result = coap_split_uri((unsigned char *)teststr, strlen(teststr), &uri);
+  CU_ASSERT(result == 0);
+  CU_ASSERT(uri.host.length == 3);
+  CU_ASSERT_NSTRING_EQUAL(uri.host.s, "foo", 3);
+
+  CU_ASSERT(uri.path.length == 0);
+  CU_ASSERT(uri.path.s == NULL);
+
+  CU_ASSERT(uri.query.length == 0);
+  CU_ASSERT(uri.query.s == NULL);
+
+  CU_ASSERT(uri.port == 10000);
+}
+
+void
+t_parse_uri5b(void) {
   char teststr[] = "coap://foo:100000";
   int result;
   coap_uri_t uri;
 
   result = coap_split_uri((unsigned char *)teststr, strlen(teststr), &uri);
-  if (result == 0) {
-    CU_ASSERT(uri.host.length == 3);
-    CU_ASSERT_NSTRING_EQUAL(uri.host.s, "foo", 3);
-
-    CU_ASSERT(uri.path.length == 0);
-    CU_ASSERT(uri.path.s == NULL);
-
-    CU_ASSERT(uri.query.length == 0);
-    CU_ASSERT(uri.query.s == NULL);
-
-    CU_FAIL("invalid port not detected");
-  } else {
-    CU_PASS("detected invalid port");
-  }
+  CU_ASSERT (result < 0);
 }
 
 void
@@ -359,6 +366,7 @@ t_init_uri_tests(void) {
   URI_TEST(suite, t_parse_uri3);
   URI_TEST(suite, t_parse_uri4);
   URI_TEST(suite, t_parse_uri5);
+  URI_TEST(suite, t_parse_uri5b);
   URI_TEST(suite, t_parse_uri6);
   URI_TEST(suite, t_parse_uri7);
   URI_TEST(suite, t_parse_uri8);

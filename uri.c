@@ -128,11 +128,15 @@ coap_split_uri(unsigned char *str_var, size_t len, coap_uri_t *uri) {
     }
 
     if (p < q) {		/* explicit port number given */
-      int uri_port = 0;
+      unsigned int uri_port = 0;
     
       while (p < q)
 	uri_port = uri_port * 10 + (*p++ - '0');
 
+      if (65536 <= uri_port) {
+        res = -4;
+        goto error;
+      }
       uri->port = uri_port;
     } 
   }
