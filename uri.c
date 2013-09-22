@@ -260,7 +260,7 @@ check_segment(const unsigned char *s, size_t length) {
  * @bug This function does not split segments that are bigger than 270
  * bytes.
  */
-int
+static int
 make_decoded_option(const unsigned char *s, size_t length, 
 		    unsigned char *buf, size_t buflen) {
   int res;
@@ -338,7 +338,7 @@ struct cnt_str {
   int n;
 };
 
-void
+static void
 write_option(unsigned char *s, size_t len, void *data) {
   struct cnt_str *state = (struct cnt_str *)data;
   int res;

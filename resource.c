@@ -47,7 +47,7 @@ coap_free_subscription(coap_subscription_t *subscription) {
 
 #define min(a,b) ((a) < (b) ? (a) : (b))
 
-int
+static int
 match(const str *text, const str *pattern, int match_prefix, int match_substring) {
   assert(text); assert(pattern);
   

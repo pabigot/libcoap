@@ -496,7 +496,7 @@ coap_send_message_type(coap_context_t *context,
   return result;
 }
 
-int
+static int
 _order_timestamp( coap_queue_t *lhs, coap_queue_t *rhs ) {
   return lhs && rhs && ( lhs->t < rhs->t ) ? -1 : 1;
 }
@@ -601,14 +601,6 @@ coap_retransmit( coap_context_t *context, coap_queue_t *node ) {
   /* And finally delete the node */
   coap_delete_node( node );
   return COAP_INVALID_TID;
-}
-
-int
-_order_transaction_id( coap_queue_t *lhs, coap_queue_t *rhs ) {
-  return ( lhs && rhs && lhs->pdu && rhs->pdu &&
-	   ( lhs->id < rhs->id ) )
-    ? -1
-    : 1;
 }
 
 /** 
@@ -906,7 +898,7 @@ coap_new_error_response(coap_pdu_t *request, unsigned char code,
   return response;
 }
 
-coap_pdu_t *
+static coap_pdu_t *
 wellknown_response(coap_context_t *context, coap_pdu_t *request) {
   coap_pdu_t *resp;
   coap_opt_iterator_t opt_iter;
@@ -973,7 +965,7 @@ wellknown_response(coap_context_t *context, coap_pdu_t *request) {
 #define WANT_WKC(Pdu,Key)					\
   (((Pdu)->hdr->code == COAP_REQUEST_GET) && is_wkc(Key))
 
-void
+static void
 handle_request(coap_context_t *context, coap_queue_t *node) {      
   coap_method_handler_t h = NULL;
   coap_pdu_t *response = NULL;
