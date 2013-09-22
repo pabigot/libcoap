@@ -12,6 +12,7 @@ VERSION:=@PACKAGE_VERSION@
 @SET_MAKE@
 SHELL = /bin/sh
 MKDIR = mkdir
+CC = @CC@
 
 abs_builddir = @abs_builddir@
 top_builddir = @top_builddir@
@@ -21,8 +22,8 @@ PROGRAMS:=coap-server coap-client rd etsi_iot_01 #tiny
 SOURCES:= tiny.c client.c server.c rd.c etsi_iot_01.c
 OBJECTS:= $(patsubst %.c, %.o, $(SOURCES))
 #CFLAGS:=-g -Wall -ansi -pedantic -I..
-CFLAGS:=-g -Wall @CFLAGS@
-CPPFLAGS:=-I$(top_srcdir) @CPPFLAGS@
+CFLAGS:=@CFLAGS@
+CPPFLAGS:=-I$(top_srcdir) -D_POSIX_SOURCE -D_POSIX_C_SOURCE=2 -D_SVID_SOURCE @CPPFLAGS@
 DISTDIR?=$(top_builddir)/@PACKAGE_TARNAME@-@PACKAGE_VERSION@
 FILES:=Makefile.in $(SOURCES)
 LDFLAGS:=-L$(top_builddir)
