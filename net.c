@@ -37,6 +37,15 @@
 
 #ifndef WITH_CONTIKI
 
+#if 1 && __linux__ && !defined(IPV6_ADDR_PREFERENCES)
+/* Work around absence of user-level RFC5014 support in Linux.  This
+ * has been in the kernel since March 2008; WTF didn't it make it to
+ * user space before 3.7? */
+
+#define IPV6_ADDR_PREFERENCES   72
+#define IPV6_PREFER_SRC_PUBLIC          0x0002
+#endif /* linux */
+
 time_t clock_offset;
 
 static inline coap_queue_t *
@@ -259,6 +268,17 @@ coap_new_context(const coap_address_t *listen_addr) {
     coap_log(LOG_WARN, "setsockopt SO_REUSEADDR");
 #endif
   }
+
+#ifdef IPV6_ADDR_PREFERENCES
+  if ( AF_INET6 == listen_addr->addr.sa.sa_family ) {
+    int value = IPV6_PREFER_SRC_PUBLIC;
+    if ( setsockopt( c->sockfd, IPPROTO_IPV6, IPV6_ADDR_PREFERENCES, &value, sizeof(value) ) < 0 ) {
+#ifndef NDEBUG
+      coap_log(LOG_WARN, "setsockopt IPV6_ADDR_PREFERENCES");
+#endif
+    }
+  }
+#endif /* IPV6_ADDR_PREFERENCES */
 
   if (bind(c->sockfd, &listen_addr->addr.sa, listen_addr->size) < 0) {
 #ifndef NDEBUG
