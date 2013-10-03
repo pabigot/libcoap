@@ -229,6 +229,7 @@ hnd_get_async(coap_context_t  *ctx, struct coap_resource_t *resource,
     for (size = COAP_OPT_LENGTH(option); size; --size, ++p)
       delay = delay * 10 + (*p - '0');
   }
+  debug("async delay %u seconds\n", delay);
 
   async = coap_register_async(ctx, peer, request, 
 			      COAP_ASYNC_SEPARATE | COAP_ASYNC_CONFIRM,
@@ -240,7 +241,11 @@ check_async(coap_context_t  *ctx, coap_tick_t now) {
   coap_pdu_t *response;
   coap_async_state_t *tmp;
 
-  size_t size = sizeof(coap_hdr_t) + 8;
+  size_t size = sizeof(coap_hdr_t) + 1 + 4;
+  if (async) {
+    size += async->tokenlen;
+    debug("async add %u to %u\n", async->tokenlen, size);
+  }
 
   if (!async || now < async->created + (unsigned long)async->appdata) 
     return;
@@ -261,7 +266,9 @@ check_async(coap_context_t  *ctx, coap_tick_t now) {
   if (async->tokenlen)
     coap_add_token(response, async->tokenlen, async->token);
 
-  coap_add_data(response, 4, (unsigned char *)"done");
+  if (! coap_add_data(response, 4, (unsigned char *)"done")) {
+    warn("async data add failed\n");
+  }
 
   if (coap_send(ctx, &async->peer, response) == COAP_INVALID_TID) {
     debug("check_async: cannot send response for message %d\n", 
