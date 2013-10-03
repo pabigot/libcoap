@@ -37,10 +37,10 @@
 
 #ifndef WITH_CONTIKI
 
-#if 1 && __linux__ && !defined(IPV6_ADDR_PREFERENCES)
+#if __linux__ && !defined(IPV6_ADDR_PREFERENCES)
 /* Work around absence of user-level RFC5014 support in Linux.  This
- * has been in the kernel since March 2008; WTF didn't it make it to
- * user space before 3.7? */
+ * has been in the kernel since March 2008, but didn't make it to user
+ * space until 3.7. */
 
 #define IPV6_ADDR_PREFERENCES   72
 #define IPV6_PREFER_SRC_PUBLIC          0x0002
