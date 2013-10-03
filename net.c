@@ -1049,23 +1049,14 @@ handle_request(coap_context_t *context, coap_queue_t *node) {
 			     : COAP_MESSAGE_NON,
 			     0, node->pdu->hdr->id, COAP_MAX_PDU_SIZE);
     
-    if (NULL != response) {
+    /* Implementation detail: coap_add_token() immediately returns 0
+       if response == NULL */
+    if (coap_add_token(response, node->pdu->hdr->token_length,
+		       node->pdu->hdr->token)) {
       str token = { node->pdu->hdr->token_length, node->pdu->hdr->token };
 
       h(context, resource, &node->remote, 
 	node->pdu, &token, response);
-
-      if (0 != response->hdr->code) {
-        /* Only add token if the response is not empty. */
-        if (! coap_add_token(response, node->pdu->hdr->token_length,
-                             node->pdu->hdr->token)) {
-          warn("cannot add token to non-empty response\r\n");
-          coap_delete_pdu(response);
-          response = NULL;
-        }
-      }
-    }
-    if (NULL != response) {
       if (response->hdr->type != COAP_MESSAGE_NON ||
 	  (response->hdr->code >= 64 
 	   && !coap_is_mcast(&node->local))) {
