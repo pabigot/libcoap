@@ -1057,6 +1057,13 @@ handle_request(coap_context_t *context, coap_queue_t *node) {
 
       h(context, resource, &node->remote, 
 	node->pdu, &token, response);
+
+      /* Remove token when sending empty ACK. */
+      if ((0 == response->hdr->code)
+          && (0 < node->pdu->hdr->token_length)) {
+        response->hdr->token_length = 0;
+        response->length -= node->pdu->hdr->token_length;
+      }
       if (response->hdr->type != COAP_MESSAGE_NON ||
 	  (response->hdr->code >= 64 
 	   && !coap_is_mcast(&node->local))) {
